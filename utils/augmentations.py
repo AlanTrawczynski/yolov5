@@ -28,6 +28,7 @@ class Albumentations:
                 A.ShiftScaleRotate(shift_limit=.1, scale_limit=(0.0, 0.2), rotate_limit=25, border_mode=1, p=.8),
                 A.HueSaturationValue(hue_shift_limit=0, sat_shift_limit=(30,30), val_shift_limit=0, p=1),
                 A.OpticalDistortion(distort_limit=(0.65, 1), shift_limit=(-0.2, 0), border_mode=0, value=0, p=1),
+                A.PadIfNeeded(min_height=640, min_width=640, border_mode=cv2.BORDER_CONSTANT, value=0),
                 ]  # transforms
             self.transform = A.Compose(T, bbox_params=A.BboxParams(format='yolo', label_fields=['class_labels']))
 
@@ -102,23 +103,25 @@ def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleF
     # Compute padding
     ratio = r, r  # width, height ratios
     new_unpad = int(round(shape[1] * r)), int(round(shape[0] * r))
-    dw, dh = new_shape[1] - new_unpad[0], new_shape[0] - new_unpad[1]  # wh padding
+    # dw, dh = new_shape[1] - new_unpad[0], new_shape[0] - new_unpad[1]  # wh padding
     if auto:  # minimum rectangle
-        dw, dh = np.mod(dw, stride), np.mod(dh, stride)  # wh padding
+        # dw, dh = np.mod(dw, stride), np.mod(dh, stride)  # wh padding
+        pass
     elif scaleFill:  # stretch
-        dw, dh = 0.0, 0.0
+        # dw, dh = 0.0, 0.0
         new_unpad = (new_shape[1], new_shape[0])
         ratio = new_shape[1] / shape[1], new_shape[0] / shape[0]  # width, height ratios
 
-    dw /= 2  # divide padding into 2 sides
-    dh /= 2
+    # dw /= 2  # divide padding into 2 sides
+    # dh /= 2
 
     if shape[::-1] != new_unpad:  # resize
         im = cv2.resize(im, new_unpad, interpolation=cv2.INTER_LINEAR)
-    top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
-    left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
-    im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
-    return im, ratio, (dw, dh)
+    # top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
+    # left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
+    # im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
+    # return im, ratio, (dw, dh)
+    return im, ratio, (0.0, 0.0)
 
 
 def random_perspective(im,
