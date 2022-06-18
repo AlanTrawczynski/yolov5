@@ -106,7 +106,7 @@ class Loggers():
                     with warnings.catch_warnings():
                         warnings.simplefilter('ignore')  # suppress jit trace warning
                         self.tb.add_graph(torch.jit.trace(de_parallel(model), imgs[0:1], strict=False), [])
-            if ni < 3:
+            if ni < 10:
                 f = self.save_dir / f'train_batch{ni}.jpg'  # filename
                 plot_images(imgs, targets, paths, f)
             if self.wandb and ni == 10:
