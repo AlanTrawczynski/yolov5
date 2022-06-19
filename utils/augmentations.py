@@ -26,11 +26,11 @@ class Albumentations:
                 A.Blur(blur_limit=5, p=1),
                 A.RandomBrightnessContrast(brightness_limit=0, contrast_limit=(.10,.25), p=1),
                 A.ShiftScaleRotate(shift_limit=.1, scale_limit=(0.0, 0.2), rotate_limit=25, border_mode=1, p=.8),
-                A.HueSaturationValue(hue_shift_limit=0, sat_shift_limit=(30,30), val_shift_limit=0, p=1),
+                A.RGBShift(r_shift_limit=0, g_shift_limit=0, b_shift_limit=(15,15), p=1),
                 A.OpticalDistortion(distort_limit=(0.65, 1), shift_limit=(-0.2, 0), border_mode=0, value=0, p=1),
                 A.PadIfNeeded(min_height=640, min_width=640, border_mode=cv2.BORDER_CONSTANT, value=0),
                 ]  # transforms
-            self.transform = A.Compose(T, bbox_params=A.BboxParams(format='yolo', label_fields=['class_labels']))
+            self.transform = A.Compose(T, bbox_params=A.BboxParams(format='yolo', label_fields=['class_labels'], min_visibility=.2))
 
             LOGGER.info(colorstr('albumentations: ') + ', '.join(f'{x}' for x in self.transform.transforms if x.p))
         except ImportError:  # package not installed, skip
